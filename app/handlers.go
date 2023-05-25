@@ -35,7 +35,7 @@ func RegisterHandlers() fx.Option {
 				[]*fxhttpserver.HandlerRegistration{
 					fxhttpserver.NewHandlerRegistration("GET", "", recommendations.NewRecommendationHandler),
 				},
-				// Add the middleware to handle the JWT token
+				// TODO: Add the middleware to handle the JWT token
 			),
 		),
 	)
