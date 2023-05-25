@@ -1,5 +1,5 @@
 app:
-  name: "go-skel"
+  name: "search"
   version: "0.0.1"
 http:
   server:
@@ -15,3 +15,6 @@ config:
       url: http://localhost:8080/answer
     answer:
       should_fail: false
+    datascience-api:
+      url: ${DATA_API_URL}
+      key: ${DATA_API_KEY}

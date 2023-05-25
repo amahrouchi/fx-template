@@ -7,19 +7,24 @@ import (
 
 // DataScienceRecommendationApi Handles the communication with the data science recommendation API.
 type DataScienceRecommendationApi struct {
-	config *fxconfig.Config
+	apiUrl string
+	apiKey string
+
 	logger *fxlogger.Logger
 }
 
 // NewDataScienceRecommendationApi Creates a new DataScienceRecommendationApi.
 func NewDataScienceRecommendationApi(config *fxconfig.Config, logger *fxlogger.Logger) *DataScienceRecommendationApi {
 	return &DataScienceRecommendationApi{
-		config: config,
+		apiUrl: config.GetString("config.datascience-api.url"),
+		apiKey: config.GetString("config.datascience-api.key"),
 		logger: logger,
 	}
 }
 
 // GetRecommendationsByEntityAndType Gets recommendations by entity and type.
 func (s *DataScienceRecommendationApi) GetRecommendationsByEntityAndType() {
-	s.logger.Info("Call to get recommendations by entity and type")
+	s.logger.Debugf("Call to get recommendations by entity and type")
+	s.logger.Debugf("url: %v", s.apiUrl)
+	s.logger.Debugf("key: %v", s.apiKey)
 }
