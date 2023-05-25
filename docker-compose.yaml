@@ -21,7 +21,7 @@ services:
     networks:
       - search_network
     ports:
-      - "3306:3306"
+      - "${COMPOSE_SEARCH_DB_PORT:-3306}:3306"
     expose:
       - "3306"
     volumes:

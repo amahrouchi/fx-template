@@ -1,13 +1,13 @@
 up:
-	docker compose up -d
+	docker compose --env-file .env.compose up -d
 
 down:
-	docker compose down
+	docker compose --env-file .env.compose down
 
 fresh:
-	docker compose down
-	docker compose build --no-cache
-	docker compose up -d --build -V
+	docker compose --env-file .env.compose down
+	docker compose --env-file .env.compose build --no-cache
+	docker compose --env-file .env.compose up -d --build -V
 
 logs:
 	docker compose logs -f
