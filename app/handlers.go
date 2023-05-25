@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/ekkinox/fx-template/app/handler"
 	"github.com/ekkinox/fx-template/app/handler/post"
+	"github.com/ekkinox/fx-template/app/handler/recommendations"
 	"github.com/ekkinox/fx-template/app/middleware"
 	"github.com/ekkinox/fx-template/modules/fxhttpserver"
 	"go.uber.org/fx"
@@ -25,6 +26,17 @@ func RegisterHandlers() fx.Option {
 				fxhttpserver.NewHandlerRegistration("DELETE", "/:id", post.NewDeletePostHandler),
 			},
 			middleware.NewTestMiddleware,
+		),
+
+		// recommendations
+		fxhttpserver.RegisterHandlersGroup(
+			fxhttpserver.NewHandlersGroupRegistration(
+				"/recommendations",
+				[]*fxhttpserver.HandlerRegistration{
+					fxhttpserver.NewHandlerRegistration("GET", "", recommendations.NewRecommendationHandler),
+				},
+				// Add the middleware to handle the JWT token
+			),
 		),
 	)
 }
