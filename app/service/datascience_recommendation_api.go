@@ -24,7 +24,7 @@ func NewDataScienceRecommendationApi(config *fxconfig.Config, logger *fxlogger.L
 
 // GetRecommendationsByEntityAndType Gets recommendations by entity and type.
 func (s *DataScienceRecommendationApi) GetRecommendationsByEntityAndType() {
-	s.logger.Debugf("Call to get recommendations by entity and type")
-	s.logger.Debugf("url: %v", s.apiUrl)
-	s.logger.Debugf("key: %v", s.apiKey)
+	s.logger.Debug().Msg("Call to get recommendations by entity and type")
+	s.logger.Debug().Msgf("url: %v", s.apiUrl)
+	s.logger.Debug().Msgf("key: %v", s.apiKey)
 }
