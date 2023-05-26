@@ -1,6 +1,7 @@
 package recommendations
 
 import (
+	"github.com/ekkinox/fx-template/app/enum"
 	"github.com/ekkinox/fx-template/app/model"
 	"github.com/ekkinox/fx-template/app/service"
 	"github.com/labstack/echo/v4"
@@ -23,13 +24,23 @@ func NewRecommendationHandler(datascienceRecommendationApi *service.DataScienceR
 func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Get recommendations
-		h.datascienceRecommendationApi.GetRecommendationsByEntityAndType()
+		recos, err := h.datascienceRecommendationApi.GetRecommendationsByEntityAndType(
+			18,
+			enum.Retailer,
+			enum.RetailerProductsYouMayLike,
+			map[string]any{},
+		)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]any{
+				"message": "An error occurred. Recommendations could not be retrieved.",
+			})
+		}
 
 		return c.JSON(
 			http.StatusOK,
 			model.Recommendation{
-				Type: "whatever",
-				Ids:  []int{1, 2, 3},
+				Id:       9999,
+				Entities: recos,
 			},
 		)
 	}

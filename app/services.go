@@ -16,5 +16,6 @@ func RegisterServices() fx.Option {
 		repository.NewPostRepository,
 		// services
 		service.NewDataScienceRecommendationApi,
+		service.NewDatascienceApiUrl,
 	)
 }
