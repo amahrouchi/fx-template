@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 var ctx = context.Background()
@@ -18,10 +19,24 @@ type Redis struct {
 
 // Get a key from the redis cache
 func (r *Redis) Get(key string) (string, error) {
-	return "todo", nil
+	result, err := r.client.Get(ctx, key).Result()
+	if err != nil {
+		r.logger.Err(err).Msgf("Unable to retrieve key=%s", key)
+		return "", err
+	} else if err == redis.Nil {
+		return "", nil
+	}
+
+	return result, nil
 }
 
 // Set a key into the redis cache
-func (r *Redis) Set(key string, value string) error {
+func (r *Redis) Set(key string, value string, ttl int) error {
+	err := r.client.Set(ctx, key, value, time.Duration(ttl)*time.Second).Err()
+	if err != nil {
+		r.logger.Err(err).Msgf("Unable to set data into Redis: key=%s, value=%s, ttl=%d", key, value, ttl)
+		return err
+	}
+
 	return nil
 }
