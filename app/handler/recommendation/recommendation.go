@@ -10,13 +10,18 @@ import (
 
 // RecommendationHandler Gather recommendations.
 type RecommendationHandler struct {
-	recommendationApi recommendationService.RecommendationApiContract
+	recommendationApi    recommendationService.RecommendationApiContract
+	recommendationClient recommendationService.RecommendationClientContract
 }
 
 // NewRecommendationHandler Creates a new RecommendationHandler.
-func NewRecommendationHandler(recommendationApi recommendationService.RecommendationApiContract) *RecommendationHandler {
+func NewRecommendationHandler(
+	recommendationApi recommendationService.RecommendationApiContract,
+	recommendationClient recommendationService.RecommendationClientContract,
+) *RecommendationHandler {
 	return &RecommendationHandler{
-		recommendationApi: recommendationApi,
+		recommendationApi:    recommendationApi,
+		recommendationClient: recommendationClient,
 	}
 }
 

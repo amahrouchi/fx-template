@@ -1,8 +1,11 @@
 package recommendationService
 
+import "github.com/ekkinox/fx-template/app/service/cache"
+
 // RecommendationClient Gather recommendations from the recommendation API.
 type RecommendationClient struct {
 	RecommendationApi RecommendationApiContract
+	cacheService      cache.CacheContract
 }
 
 // GetRecommendationsByEntityAndType Get recommendations by entity and type.
