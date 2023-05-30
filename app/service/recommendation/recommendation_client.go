@@ -9,6 +9,8 @@ import (
 
 // RecommendationClient Gather recommendations from the recommendation API.
 type RecommendationClient struct {
+	ttl int
+
 	recommendationApi RecommendationApiContract
 	cacheService      cache.CacheContract
 	logger            *fxlogger.Logger
@@ -49,7 +51,7 @@ func (rc *RecommendationClient) GetRecommendationsByEntityAndType(
 		}
 
 		// Store recommendations in cache
-		err = rc.cacheService.Set(key, string(jsonRecos), 3600) // TODO: create a config for this TTL
+		err = rc.cacheService.Set(key, string(jsonRecos), rc.ttl)
 		if err != nil {
 			rc.logger.Err(err).Msgf("Failed to set recommendations in cache for key: %s", key)
 			return []int{}, err
