@@ -1,5 +1,7 @@
 package enum
 
+// TODO: test all types
+
 // Recommendation types
 const (
 	RetailerBrandsYouMayLike           = 1

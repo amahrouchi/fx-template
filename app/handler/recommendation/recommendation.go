@@ -10,17 +10,14 @@ import (
 
 // RecommendationHandler Gather recommendations.
 type RecommendationHandler struct {
-	recommendationApi    recommendationService.RecommendationApiContract
 	recommendationClient recommendationService.RecommendationClientContract
 }
 
 // NewRecommendationHandler Creates a new RecommendationHandler.
 func NewRecommendationHandler(
-	recommendationApi recommendationService.RecommendationApiContract,
 	recommendationClient recommendationService.RecommendationClientContract,
 ) *RecommendationHandler {
 	return &RecommendationHandler{
-		recommendationApi:    recommendationApi,
 		recommendationClient: recommendationClient,
 	}
 }
@@ -28,19 +25,6 @@ func NewRecommendationHandler(
 // Handle Handles the recommendation request.
 func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Get recommendations (direct API)
-		//recos, err := h.recommendationApi.GetRecommendationsByEntityAndType(
-		//	18,
-		//	enum.Retailer,
-		//	enum.RetailerProductsYouMayLike, // TODO: test RetailerCategoryProductsYouMayLike with category_id metadata
-		//	map[string]any{},
-		//)
-		//if err != nil {
-		//	return c.JSON(http.StatusInternalServerError, map[string]any{
-		//		"message": "An error occurred. Recommendations could not be retrieved.",
-		//	})
-		//}
-
 		// Get recommendations (client)
 		recos, _ := h.recommendationClient.GetRecommendationsByEntityAndType(18, enum.Retailer, enum.RetailerProductsYouMayLike)
 

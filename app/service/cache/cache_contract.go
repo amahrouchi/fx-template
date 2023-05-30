@@ -30,11 +30,13 @@ func NewCacheService(config *fxconfig.Config, logger *fxlogger.Logger) CacheCont
 	logger.Info().Msgf("Connected successfully to Redis: %v.", pong)
 
 	return &Redis{
-		host:   config.GetString("config.redis.host"),
-		port:   config.GetInt("config.redis.port"),
+		host:   host,
+		port:   port,
 		client: client,
 		logger: logger,
 	}
 }
 
+// -----------------------------------
 // TODO: close the redis connection?
+// -----------------------------------
