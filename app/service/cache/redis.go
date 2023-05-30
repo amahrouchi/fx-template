@@ -20,11 +20,12 @@ type Redis struct {
 // Get a key from the redis cache
 func (r *Redis) Get(key string) (string, error) {
 	result, err := r.client.Get(ctx, key).Result()
-	if err != nil {
+	if err == redis.Nil {
+		r.logger.Info().Msgf("No cache content for key=%s", key)
+		return "", nil
+	} else if err != nil {
 		r.logger.Err(err).Msgf("Unable to retrieve key=%s", key)
 		return "", err
-	} else if err == redis.Nil {
-		return "", nil
 	}
 
 	return result, nil

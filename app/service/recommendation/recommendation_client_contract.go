@@ -1,6 +1,9 @@
 package recommendationService
 
-import "github.com/ekkinox/fx-template/app/service/cache"
+import (
+	"github.com/ekkinox/fx-template/app/service/cache"
+	"github.com/ekkinox/fx-template/modules/fxlogger"
+)
 
 // RecommendationClientContract Represents a recommendation client service.
 type RecommendationClientContract interface {
@@ -11,9 +14,11 @@ type RecommendationClientContract interface {
 func NewRecommendationClient(
 	recommendationApi RecommendationApiContract,
 	cacheService cache.CacheContract,
+	logger *fxlogger.Logger,
 ) RecommendationClientContract {
 	return &RecommendationClient{
-		RecommendationApi: recommendationApi,
+		recommendationApi: recommendationApi,
 		cacheService:      cacheService,
+		logger:            logger,
 	}
 }

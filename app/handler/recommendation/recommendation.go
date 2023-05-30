@@ -28,20 +28,21 @@ func NewRecommendationHandler(
 // Handle Handles the recommendation request.
 func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Get recommendations
-		recos, err := h.recommendationApi.GetRecommendationsByEntityAndType(
-			18,
-			enum.Retailer,
-			enum.RetailerProductsYouMayLike, // TODO: test RetailerCategoryProductsYouMayLike with category_id metadata
-			map[string]any{},
-		)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]any{
-				"message": "An error occurred. Recommendations could not be retrieved.",
-			})
-		}
+		// Get recommendations (direct API)
+		//recos, err := h.recommendationApi.GetRecommendationsByEntityAndType(
+		//	18,
+		//	enum.Retailer,
+		//	enum.RetailerProductsYouMayLike, // TODO: test RetailerCategoryProductsYouMayLike with category_id metadata
+		//	map[string]any{},
+		//)
+		//if err != nil {
+		//	return c.JSON(http.StatusInternalServerError, map[string]any{
+		//		"message": "An error occurred. Recommendations could not be retrieved.",
+		//	})
+		//}
 
-		// TODO: implement the client service (+ redis?)
+		// Get recommendations (client)
+		recos, _ := h.recommendationClient.GetRecommendationsByEntityAndType(18, enum.Retailer, enum.RetailerProductsYouMayLike)
 
 		return c.JSON(
 			http.StatusOK,
