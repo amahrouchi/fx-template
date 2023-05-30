@@ -17,5 +17,6 @@ func RegisterServices() fx.Option {
 		// services
 		recommendationService.NewRecommendationApi,
 		recommendationService.NewApiUrl,
+		recommendationService.NewRecommendationClient,
 	)
 }
