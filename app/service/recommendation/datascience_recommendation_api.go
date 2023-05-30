@@ -18,7 +18,7 @@ type DataScienceRecommendationApi struct {
 	apiKey string
 
 	logger        *fxlogger.Logger
-	apiUrlService ApiUrl
+	apiUrlService ApiUrlContract
 }
 
 // GetRecommendationsByEntityAndType Gets recommendations by entity and type.
