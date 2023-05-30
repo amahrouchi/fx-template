@@ -1,6 +1,9 @@
 version: '3'
 
 services:
+  # -------------------
+  # App ---------------
+  # -------------------
   search_app:
     container_name: search_app
     build:
@@ -14,6 +17,9 @@ services:
       - .:/app
     env_file:
       - .env
+  # -------------------
+  # Database ----------
+  # -------------------
   search_db:
     container_name: search_db
     image: mysql:8
@@ -28,6 +34,33 @@ services:
       - search_db_data:/var/lib/mysql
     env_file:
       - .env
+  # -------------------
+  # Redis cache -------
+  # -------------------
+  search_redis:
+    container_name: search_redis
+    image: "redis:latest"
+    restart: always
+    command: --port 6380
+    ports:
+      - "${COMPOSE_REDIS_PORT:-6380}:6380"
+    networks:
+      - search_network
+  # -------------------
+  # Redis commander ---
+  # -------------------
+  search_redis_commander:
+    container_name: search_redis_commander
+    image: rediscommander/redis-commander
+    networks:
+        - search_network
+    ports:
+      - "${COMPOSE_REDIS_COMMANDER_PORT:-8181}:8081"
+    environment:
+      - REDIS_HOSTS=local:search_redis:6380
+# -------------------
+# Misc --------------
+# -------------------
 volumes:
   search_db_data:
     driver: local
