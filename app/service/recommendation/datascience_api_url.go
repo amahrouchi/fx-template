@@ -1,21 +1,13 @@
-package service
+package recommendationService
 
 import (
 	"errors"
 	"github.com/ekkinox/fx-template/app/enum"
-	"github.com/ekkinox/fx-template/modules/fxconfig"
 )
 
 // DatascienceApiUrl Generates the proper URL to call the DataScience API depending on the context.
 type DatascienceApiUrl struct {
 	apiUrl string
-}
-
-// NewDatascienceApiUrl Creates a new DatascienceApiUrl.
-func NewDatascienceApiUrl(config *fxconfig.Config) *DatascienceApiUrl {
-	return &DatascienceApiUrl{
-		apiUrl: config.GetString("config.datascience-api.url"),
-	}
 }
 
 // Url Gets the URL to call the DataScience API.

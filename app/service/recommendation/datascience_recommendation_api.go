@@ -1,4 +1,4 @@
-package service
+package recommendationService
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ekkinox/fx-template/app/enum"
-	"github.com/ekkinox/fx-template/modules/fxconfig"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"io"
 	"net/http"
@@ -18,22 +17,8 @@ type DataScienceRecommendationApi struct {
 	apiUrl string
 	apiKey string
 
-	logger            *fxlogger.Logger
-	datascienceApiUrl *DatascienceApiUrl
-}
-
-// NewDataScienceRecommendationApi Creates a new DataScienceRecommendationApi.
-func NewDataScienceRecommendationApi(
-	config *fxconfig.Config,
-	logger *fxlogger.Logger,
-	datascienceApiUrl *DatascienceApiUrl,
-) *DataScienceRecommendationApi {
-	return &DataScienceRecommendationApi{
-		apiUrl:            config.GetString("config.datascience-api.url"),
-		apiKey:            config.GetString("config.datascience-api.key"),
-		logger:            logger,
-		datascienceApiUrl: datascienceApiUrl,
-	}
+	logger        *fxlogger.Logger
+	apiUrlService ApiUrl
 }
 
 // GetRecommendationsByEntityAndType Gets recommendations by entity and type.
@@ -75,7 +60,7 @@ func (s *DataScienceRecommendationApi) request(
 	recommendationTypeId int,
 	metadata map[string]any,
 ) (string, error) {
-	url, err := s.datascienceApiUrl.Url(recommendableType, recommendationTypeId)
+	url, err := s.apiUrlService.Url(recommendableType, recommendationTypeId)
 	if err != nil {
 		s.logger.Error().Msg("DS API URL error")
 		return "", err

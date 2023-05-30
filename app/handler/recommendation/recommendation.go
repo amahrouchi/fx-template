@@ -1,22 +1,22 @@
-package recommendations
+package recommendationHandler
 
 import (
 	"github.com/ekkinox/fx-template/app/enum"
 	"github.com/ekkinox/fx-template/app/model"
-	"github.com/ekkinox/fx-template/app/service"
+	recommendationService "github.com/ekkinox/fx-template/app/service/recommendation"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 // RecommendationHandler Gather recommendations.
 type RecommendationHandler struct {
-	datascienceRecommendationApi *service.DataScienceRecommendationApi
+	recommendationApi recommendationService.RecommendationApi
 }
 
 // NewRecommendationHandler Creates a new RecommendationHandler.
-func NewRecommendationHandler(datascienceRecommendationApi *service.DataScienceRecommendationApi) *RecommendationHandler {
+func NewRecommendationHandler(recommendationApi recommendationService.RecommendationApi) *RecommendationHandler {
 	return &RecommendationHandler{
-		datascienceRecommendationApi: datascienceRecommendationApi,
+		recommendationApi: recommendationApi,
 	}
 }
 
@@ -24,10 +24,10 @@ func NewRecommendationHandler(datascienceRecommendationApi *service.DataScienceR
 func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Get recommendations
-		recos, err := h.datascienceRecommendationApi.GetRecommendationsByEntityAndType(
+		recos, err := h.recommendationApi.GetRecommendationsByEntityAndType(
 			18,
 			enum.Retailer,
-			enum.RetailerProductsYouMayLike,
+			enum.RetailerProductsYouMayLike, // TODO: test RetailerCategoryProductsYouMayLike with category_id metadata
 			map[string]any{},
 		)
 		if err != nil {
@@ -35,6 +35,8 @@ func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 				"message": "An error occurred. Recommendations could not be retrieved.",
 			})
 		}
+
+		// TODO: implement the client service (+ redis?)
 
 		return c.JSON(
 			http.StatusOK,
