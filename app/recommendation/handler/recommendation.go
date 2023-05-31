@@ -27,6 +27,7 @@ func NewRecommendationHandler(
 }
 
 // Handle Handles the recommendation request.
+// TODO: handle other recommendation endpoints (see monolith controller)
 func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// TODO: Get retailer id from JWT token
