@@ -14,7 +14,7 @@ type RecommendationClientContract interface {
 // NewRecommendationClient Creates a new RecommendationClientContract service.
 func NewRecommendationClient(
 	recommendationApi RecommendationApiContract,
-	cacheService cache.CacheContract,
+	cacheService cacheService.CacheContract,
 	config *fxconfig.Config,
 	logger *fxlogger.Logger,
 ) RecommendationClientContract {

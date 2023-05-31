@@ -12,7 +12,7 @@ type RecommendationClient struct {
 	ttl int
 
 	recommendationApi RecommendationApiContract
-	cacheService      cache.CacheContract
+	cacheService      cacheService.CacheContract
 	logger            *fxlogger.Logger
 }
 
