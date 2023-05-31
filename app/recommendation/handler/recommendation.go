@@ -1,9 +1,9 @@
 package recommendationHandler
 
 import (
-	"github.com/ekkinox/fx-template/app/enum"
-	"github.com/ekkinox/fx-template/app/model"
-	recommendationService "github.com/ekkinox/fx-template/app/service/recommendation"
+	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
+	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
+	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -26,12 +26,24 @@ func NewRecommendationHandler(
 func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Get recommendations (client)
-		recos, _ := h.recommendationClient.GetRecommendationsByEntityAndType(18, enum.Retailer, enum.RetailerProductsYouMayLike)
+		recoType := recommendationEnum.Retailer
+		retailerId := 18
+		recommendationTypeId := recommendationEnum.RetailerProductsYouMayLike
+		recos, _ := h.recommendationClient.GetRecommendationsByEntityAndType(
+			retailerId,
+			recoType,
+			recommendationTypeId,
+		)
+
+		// TODO:
+		//  - create the reco service,
+		//  - map entities using the DB,
+		//  - make sure to externalize this part to be able to replace it quickly by a monolith API
 
 		return c.JSON(
 			http.StatusOK,
-			model.Recommendation{
-				Id:       9999,
+			recommendationModel.Recommendation{
+				Id:       recommendationEnum.RetailerProductsYouMayLike,
 				Entities: recos,
 			},
 		)

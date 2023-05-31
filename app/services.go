@@ -1,9 +1,9 @@
 package app
 
 import (
+	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/ekkinox/fx-template/app/repository"
 	"github.com/ekkinox/fx-template/app/service/cache"
-	recommendationService "github.com/ekkinox/fx-template/app/service/recommendation"
 	"github.com/ekkinox/fx-template/modules/fxgorm"
 	"github.com/ekkinox/fx-template/modules/fxhealthchecker"
 	"go.uber.org/fx"

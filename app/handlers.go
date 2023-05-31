@@ -3,8 +3,8 @@ package app
 import (
 	"github.com/ekkinox/fx-template/app/handler"
 	"github.com/ekkinox/fx-template/app/handler/post"
-	"github.com/ekkinox/fx-template/app/handler/recommendation"
 	"github.com/ekkinox/fx-template/app/middleware"
+	recommendationHandler "github.com/ekkinox/fx-template/app/recommendation/handler"
 	"github.com/ekkinox/fx-template/modules/fxhttpserver"
 	"go.uber.org/fx"
 )

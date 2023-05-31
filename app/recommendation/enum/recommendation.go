@@ -1,4 +1,4 @@
-package enum
+package recommendationEnum
 
 // TODO: test all types
 

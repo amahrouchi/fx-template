@@ -1,4 +1,4 @@
-package model
+package recommendationModel
 
 // Recommendation Represents a recommendation
 type Recommendation struct {

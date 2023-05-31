@@ -2,7 +2,7 @@ package recommendationService
 
 import (
 	"errors"
-	"github.com/ekkinox/fx-template/app/enum"
+	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 )
 
 // TODO: test all URLs
@@ -15,9 +15,9 @@ type DatascienceApiUrl struct {
 // Url Gets the URL to call the DataScience API.
 func (u *DatascienceApiUrl) Url(recommendableType string, recommendationTypeId int) (string, error) {
 	switch recommendableType {
-	case enum.Retailer:
+	case recommendationEnum.Retailer:
 		return u.getRetailerUrl(recommendationTypeId), nil
-	case enum.Product:
+	case recommendationEnum.Product:
 		url, err := u.getProductUrl(recommendationTypeId)
 		return url, err
 	default:
@@ -27,7 +27,7 @@ func (u *DatascienceApiUrl) Url(recommendableType string, recommendationTypeId i
 
 // getRetailerUrl Gets the URL to call the DataScience API for a retailer.
 func (u *DatascienceApiUrl) getRetailerUrl(recommendationTypeId int) string {
-	if recommendationTypeId == enum.RetailerCategoryProductsYouMayLike {
+	if recommendationTypeId == recommendationEnum.RetailerCategoryProductsYouMayLike {
 		return u.apiUrl + "/retailers_recommendations_cp/v1/"
 	}
 
@@ -37,9 +37,9 @@ func (u *DatascienceApiUrl) getRetailerUrl(recommendationTypeId int) string {
 // getProductUrl Gets the URL to call the DataScience API for a product.
 func (u *DatascienceApiUrl) getProductUrl(recommendationTypeId int) (string, error) {
 	switch recommendationTypeId {
-	case enum.ProductProductsSameBrand:
+	case recommendationEnum.ProductProductsSameBrand:
 		return u.apiUrl + "/product_recommendations/same_brand/", nil
-	case enum.ProductProductsCrossBrand:
+	case recommendationEnum.ProductProductsCrossBrand:
 		return u.apiUrl + "/product_recommendations/cross_brand/", nil
 	default:
 		return "", errors.New("invalid recommendation type")

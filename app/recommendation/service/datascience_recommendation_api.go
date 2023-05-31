@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ekkinox/fx-template/app/enum"
+	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"io"
 	"net/http"
@@ -123,7 +123,7 @@ func (s *DataScienceRecommendationApi) getPayload(
 	metadata map[string]any,
 ) (map[string]any, error) {
 	// Category products recommendation payload
-	if recommendationTypeId == enum.RetailerCategoryProductsYouMayLike {
+	if recommendationTypeId == recommendationEnum.RetailerCategoryProductsYouMayLike {
 		// Check that metadata contains category_id
 		if _, ok := metadata["category_id"]; !ok {
 			return nil, errors.New("missing category_id in metadata")
