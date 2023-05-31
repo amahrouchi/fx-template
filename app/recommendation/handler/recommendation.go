@@ -1,9 +1,7 @@
 package recommendationHandler
 
 import (
-	recommendationApiService "github.com/ekkinox/fx-template/app/recommendation/api"
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
-	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
 	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/labstack/echo/v4"
@@ -12,49 +10,51 @@ import (
 
 // RetailerRecommendationHandler Gather recommendations.
 type RetailerRecommendationHandler struct {
-	recommendationClient recommendationService.RecommendationClientContract
-	productApi           recommendationApiService.ProductApiContract
-	logger               *fxlogger.Logger
+	recommendationService recommendationService.RecommendationServiceContract
+	logger                *fxlogger.Logger
 }
 
 // NewRecommendationHandler Creates a new RetailerRecommendationHandler.
 func NewRecommendationHandler(
-	recommendationClient recommendationService.RecommendationClientContract,
-	productApi recommendationApiService.ProductApiContract,
+	recommendationService recommendationService.RecommendationServiceContract,
 	logger *fxlogger.Logger,
 ) *RetailerRecommendationHandler {
 	return &RetailerRecommendationHandler{
-		recommendationClient: recommendationClient,
-		productApi:           productApi,
-		logger:               logger,
+		recommendationService: recommendationService,
+		logger:                logger,
 	}
 }
 
 // Handle Handles the recommendation request.
 func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Get recommendations (client)
-		recoType := recommendationEnum.Retailer
+		// TODO: Get all of this from the request
 		retailerId := 18
-		recommendationTypeId := recommendationEnum.RetailerProductsYouMayLike
-		recos, _ := h.recommendationClient.GetRecommendationsByEntityAndType(
+		recoType := recommendationEnum.Retailer
+		recommendationTypes := []int{
+			recommendationEnum.RetailerProductsYouMayLike,
+			recommendationEnum.RetailerBrandsYouMayLike,
+			recommendationEnum.RetailerBrandsCloseToYourArea,
+		}
+
+		// Get recommendations
+		recos, err := h.recommendationService.GetRecommendationByTypes(
 			retailerId,
 			recoType,
-			recommendationTypeId,
+			recommendationTypes,
 		)
-
-		// TODO:
-		//  - create the reco service,
-		//  - map entities using the DB,
-		//  - make sure to externalize this part to be able to replace it quickly by a monolith API
-		list, _ := h.productApi.GetMany(recos)
-		h.logger.Debug().Interface("products", list).Msg("products")
+		if err != nil {
+			h.logger.Err(err).Msg("Unable to get recommendations from the service.")
+			return c.JSON(
+				http.StatusInternalServerError,
+				map[string]any{"message": "Unable to retrieve recommendations."},
+			)
+		}
 
 		return c.JSON(
 			http.StatusOK,
-			recommendationModel.Recommendation{
-				Id:       recommendationEnum.RetailerProductsYouMayLike,
-				Entities: list,
+			map[string]any{
+				"data": recos,
 			},
 		)
 	}
