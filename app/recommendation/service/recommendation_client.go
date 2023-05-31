@@ -61,8 +61,6 @@ func (rc *RecommendationClient) GetRecommendationsByEntityAndType(
 	}
 
 	// Handle found cached recommendations
-	rc.logger.Debug().Msgf("Found cached recommendations for key: %s", key)
-
 	arrayRecos := make([]int, 0)
 	err = json.Unmarshal([]byte(cachedRecos), &arrayRecos)
 	if err != nil {

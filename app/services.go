@@ -1,6 +1,7 @@
 package app
 
 import (
+	recommendationApiService "github.com/ekkinox/fx-template/app/recommendation/api"
 	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/ekkinox/fx-template/app/repository"
 	"github.com/ekkinox/fx-template/app/service/cache"
@@ -20,5 +21,7 @@ func RegisterServices() fx.Option {
 		recommendationService.NewApiUrl,
 		recommendationService.NewRecommendationClient,
 		cacheService.NewCacheService,
+		// APIs
+		recommendationApiService.NewProductApi,
 	)
 }
