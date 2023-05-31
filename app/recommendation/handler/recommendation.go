@@ -10,20 +10,20 @@ import (
 	"net/http"
 )
 
-// RecommendationHandler Gather recommendations.
-type RecommendationHandler struct {
+// RetailerRecommendationHandler Gather recommendations.
+type RetailerRecommendationHandler struct {
 	recommendationClient recommendationService.RecommendationClientContract
 	productApi           recommendationApiService.ProductApiContract
 	logger               *fxlogger.Logger
 }
 
-// NewRecommendationHandler Creates a new RecommendationHandler.
+// NewRecommendationHandler Creates a new RetailerRecommendationHandler.
 func NewRecommendationHandler(
 	recommendationClient recommendationService.RecommendationClientContract,
 	productApi recommendationApiService.ProductApiContract,
 	logger *fxlogger.Logger,
-) *RecommendationHandler {
-	return &RecommendationHandler{
+) *RetailerRecommendationHandler {
+	return &RetailerRecommendationHandler{
 		recommendationClient: recommendationClient,
 		productApi:           productApi,
 		logger:               logger,
@@ -31,7 +31,7 @@ func NewRecommendationHandler(
 }
 
 // Handle Handles the recommendation request.
-func (h *RecommendationHandler) Handle() echo.HandlerFunc {
+func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Get recommendations (client)
 		recoType := recommendationEnum.Retailer

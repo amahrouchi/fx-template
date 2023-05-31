@@ -31,7 +31,7 @@ func RegisterHandlers() fx.Option {
 		// recommendations
 		fxhttpserver.RegisterHandlersGroup(
 			fxhttpserver.NewHandlersGroupRegistration(
-				"/recommendations",
+				"/me/recommendations",
 				[]*fxhttpserver.HandlerRegistration{
 					fxhttpserver.NewHandlerRegistration("GET", "", recommendationHandler.NewRecommendationHandler),
 				},
