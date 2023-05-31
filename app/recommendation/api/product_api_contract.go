@@ -8,7 +8,7 @@ import (
 
 // ProductApiContract service getting product data from somewhere.
 type ProductApiContract interface {
-	GetMany(ids []int) ([]recommendationModel.RecommendationProduct, error)
+	GetMany(ids []int) ([]*recommendationModel.RecommendationProduct, error)
 }
 
 // NewProductApi Creates a new ProductApiContract service.

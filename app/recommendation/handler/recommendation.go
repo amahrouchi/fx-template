@@ -47,14 +47,14 @@ func (h *RecommendationHandler) Handle() echo.HandlerFunc {
 		//  - create the reco service,
 		//  - map entities using the DB,
 		//  - make sure to externalize this part to be able to replace it quickly by a monolith API
-		list, _ := h.productApi.GetMany([]int{9999})
+		list, _ := h.productApi.GetMany(recos)
 		h.logger.Debug().Interface("products", list).Msg("products")
 
 		return c.JSON(
 			http.StatusOK,
 			recommendationModel.Recommendation{
 				Id:       recommendationEnum.RetailerProductsYouMayLike,
-				Entities: recos,
+				Entities: list,
 			},
 		)
 	}

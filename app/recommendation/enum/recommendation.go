@@ -16,9 +16,13 @@ const (
 	ProductProductsCrossBrand          = 9
 )
 
-// Recommendable types
 const (
+	// Recommendable types
 	Retailer = "retailer"
 	Product  = "product"
 	Brand    = "brand"
+
+	// Recommendation types
+	ProductRecommendation = "product"
+	BrandRecommendation   = "brand"
 )

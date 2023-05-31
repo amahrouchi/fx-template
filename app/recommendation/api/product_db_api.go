@@ -2,6 +2,7 @@ package recommendationApiService
 
 import (
 	"database/sql"
+	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ type ProductDbApi struct {
 }
 
 // GetMany gets many products from the database.
-func (p *ProductDbApi) GetMany(ids []int) ([]recommendationModel.RecommendationProduct, error) {
+func (p *ProductDbApi) GetMany(ids []int) ([]*recommendationModel.RecommendationProduct, error) {
 	// Get db connection from gorm
 	db, err := p.gorm.DB()
 	if err != nil {
@@ -48,8 +49,8 @@ func (p *ProductDbApi) GetMany(ids []int) ([]recommendationModel.RecommendationP
 }
 
 // mapRows maps the sql rows to a list of products.
-func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]recommendationModel.RecommendationProduct, error) {
-	var list []recommendationModel.RecommendationProduct
+func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.RecommendationProduct, error) {
+	var list []*recommendationModel.RecommendationProduct
 	for rows.Next() {
 		// Get the data from the row
 		var productId int
@@ -63,7 +64,8 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]recommendationModel.Recommenda
 		}
 
 		// Create the product and append it to the list
-		list = append(list, recommendationModel.RecommendationProduct{
+		list = append(list, &recommendationModel.RecommendationProduct{
+			Type: recommendationEnum.ProductRecommendation,
 			Id:   productId,
 			Name: productName,
 			Brand: recommendationModel.RecommendationProductBrand{
