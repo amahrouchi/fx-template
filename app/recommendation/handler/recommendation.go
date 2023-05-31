@@ -2,6 +2,7 @@ package recommendationHandler
 
 import (
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
+	recommendationRequest "github.com/ekkinox/fx-template/app/recommendation/request"
 	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/labstack/echo/v4"
@@ -28,20 +29,35 @@ func NewRecommendationHandler(
 // Handle Handles the recommendation request.
 func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// TODO: Get all of this from the request
+		// TODO: Get retailer id from JWT token
 		retailerId := 18
-		recoType := recommendationEnum.Retailer
-		recommendationTypes := []int{
-			recommendationEnum.RetailerProductsYouMayLike,
-			recommendationEnum.RetailerBrandsYouMayLike,
-			recommendationEnum.RetailerBrandsCloseToYourArea,
+
+		// Bind request
+		var req recommendationRequest.RetailerRecommendationRequest
+		err := c.Bind(&req)
+		if err != nil {
+			h.logger.Err(err).Msg("Unable to bind recommendation types to fetch.")
+			return c.JSON(
+				http.StatusBadRequest,
+				map[string]any{"message": "bad recommendation request."},
+			)
 		}
+
+		// TODO: Validate request
+		//err = c.Validate(req)
+		//if err != nil {
+		//	h.logger.Err(err).Msg("Unable to validate recommendation types to fetch.")
+		//	return c.JSON(
+		//		http.StatusBadRequest,
+		//		map[string]any{"message": "bad recommendation request."},
+		//	)
+		//}
 
 		// Get recommendations
 		recos, err := h.recommendationService.GetRecommendationByTypes(
 			retailerId,
-			recoType,
-			recommendationTypes,
+			recommendationEnum.Retailer,
+			req.Types,
 		)
 		if err != nil {
 			h.logger.Err(err).Msg("Unable to get recommendations from the service.")
