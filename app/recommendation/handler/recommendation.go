@@ -64,7 +64,12 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 			req.Lang,
 		)
 		if err != nil {
-			h.logger.Err(err).Msg("Unable to get recommendations from the service.")
+			h.logger.Err(err).
+				Int("retailerId", retailerId).
+				Str("recommendableType", recommendationEnum.Retailer).
+				Interface("recommendationTypeIds", req.Types).
+				Str("lang", req.Lang).
+				Msg("Unable to get recommendations from the service.")
 			return c.JSON(
 				http.StatusInternalServerError,
 				map[string]any{"message": "Unable to retrieve recommendations."},
