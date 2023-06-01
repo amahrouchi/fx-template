@@ -19,6 +19,7 @@ func (r *RecommendationService) GetRecommendationByTypes(
 	recommendableId int,
 	recommendableType string,
 	typeIds []int,
+	lang string,
 ) ([]any, error) {
 	// Get recommendations from client.
 	var recoByTypes []any
@@ -34,7 +35,7 @@ func (r *RecommendationService) GetRecommendationByTypes(
 		// Get products from api.
 		switch typeId {
 		case recommendationEnum.RetailerProductsYouMayLike:
-			products, err := r.productApi.GetMany(recommendationIds)
+			products, err := r.productApi.GetMany(recommendationIds, lang)
 			if err != nil {
 				r.logger.Err(err).Msg("Unable to get products from api.")
 				return nil, err

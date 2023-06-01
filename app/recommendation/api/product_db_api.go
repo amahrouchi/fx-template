@@ -17,7 +17,7 @@ type ProductDbApi struct {
 }
 
 // GetMany gets many products from the database.
-func (p *ProductDbApi) GetMany(ids []int) ([]*recommendationModel.RecommendationProduct, error) {
+func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.RecommendationProduct, error) {
 	// Get db connection from gorm
 	db, err := p.gorm.DB()
 	if err != nil {
@@ -33,12 +33,29 @@ func (p *ProductDbApi) GetMany(ids []int) ([]*recommendationModel.Recommendation
 	joinedIds := strings.Join(strIds, ",")
 
 	// Query products from the database
-	query := "SELECT P.id, P.name, B.id as brandId, B.name AS brandName " +
-		"FROM products AS P " +
-		"INNER JOIN brands AS B ON B.id = P.brand_id " +
-		"WHERE P.id IN (" + joinedIds + ")"
-	p.logger.Debug().Str("query", query).Msg("Querying the database to get recommended products.")
-	rows, err := db.Query(query)
+	query :=
+		"SELECT " +
+			"P.id, " +
+			"P.name, " +
+			// product name (translated)
+			"(SELECT translation FROM product_translations WHERE model_id = P.id AND `key`='name' AND language = ?) AS translatedName, " +
+			"B.id as brandId, " +
+			"B.name AS brandName " +
+			"FROM products AS P " +
+			"INNER JOIN brands AS B ON B.id = P.brand_id " +
+			"WHERE P.id IN (" + joinedIds + ")"
+
+	p.logger.Debug().Str("query", query).Str("lang", lang).Msg("Querying the database to get recommended products.")
+
+	// Prepare the query
+	statement, err := db.Prepare(query)
+	if err != nil {
+		p.logger.Err(err).Msg("Unable to prepare the query to get recommended products.")
+		return nil, err
+	}
+
+	// Execute the query
+	rows, err := statement.Query(lang)
 	if err != nil {
 		p.logger.Err(err).Msg("Unable to query the database to get recommended products.")
 		return nil, err
@@ -55,19 +72,33 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 		// Get the data from the row
 		var productId int
 		var productName string
+		var productTranslatedName any
 		var brandId int
 		var brandName string
-		err := rows.Scan(&productId, &productName, &brandId, &brandName)
+		err := rows.Scan(
+			&productId,
+			&productName,
+			&productTranslatedName,
+			&brandId,
+			&brandName,
+		)
 		if err != nil {
 			p.logger.Err(err).Msg("Unable to scan row while mapping products")
 			return nil, err
+		}
+
+		// Convert the translated name to a string
+		displayedName := productName
+		productTranslatedNameStr, ok := productTranslatedName.(string)
+		if ok {
+			displayedName = productTranslatedNameStr
 		}
 
 		// Create the product and append it to the list
 		list = append(list, &recommendationModel.RecommendationProduct{
 			Type: recommendationEnum.ProductRecommendation,
 			Id:   productId,
-			Name: productName,
+			Name: displayedName,
 			Brand: recommendationModel.RecommendationProductBrand{
 				Id:   brandId,
 				Name: brandName,

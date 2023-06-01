@@ -11,6 +11,7 @@ type RecommendationServiceContract interface {
 		recommendableId int,
 		recommendableType string,
 		typeIds []int,
+		lang string,
 	) ([]any, error)
 }
 

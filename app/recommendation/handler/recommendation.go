@@ -59,6 +59,7 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 			retailerId,
 			recommendationEnum.Retailer,
 			req.Types,
+			req.Lang,
 		)
 		if err != nil {
 			h.logger.Err(err).Msg("Unable to get recommendations from the service.")

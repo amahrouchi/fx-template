@@ -4,7 +4,7 @@ package recommendationModel
 type RecommendationProduct struct {
 	Type  string                     `json:"type"`
 	Id    int                        `json:"id"`
-	Name  string                     `json:"name"` // TODO: handle translations
+	Name  string                     `json:"name"`
 	Brand RecommendationProductBrand `json:"brand"`
 }
 
