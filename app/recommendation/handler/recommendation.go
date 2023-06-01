@@ -5,6 +5,7 @@ import (
 	recommendationRequest "github.com/ekkinox/fx-template/app/recommendation/request"
 	recommendationService "github.com/ekkinox/fx-template/app/recommendation/service"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -44,15 +45,16 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 			)
 		}
 
-		// TODO: Validate request
-		//err = c.Validate(req)
-		//if err != nil {
-		//	h.logger.Err(err).Msg("Unable to validate recommendation types to fetch.")
-		//	return c.JSON(
-		//		http.StatusBadRequest,
-		//		map[string]any{"message": "bad recommendation request."},
-		//	)
-		//}
+		// Validate request
+		v := validator.New()
+		err = v.Struct(req)
+		if err != nil {
+			h.logger.Err(err).Msg("Unable to validate recommendation types to fetch.")
+			return c.JSON(
+				http.StatusBadRequest,
+				map[string]any{"message": "bad recommendation request."},
+			)
+		}
 
 		// Get recommendations
 		recos, err := h.recommendationService.GetRecommendationByTypes(
