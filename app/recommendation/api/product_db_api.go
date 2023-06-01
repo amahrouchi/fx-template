@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
-	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"gorm.io/gorm"
 	"strconv"
 	"strings"
@@ -12,8 +11,7 @@ import (
 
 // ProductDbApi service getting product data from the database.
 type ProductDbApi struct {
-	gorm   *gorm.DB
-	logger *fxlogger.Logger
+	gorm *gorm.DB
 }
 
 // GetMany gets many products from the database.
@@ -21,7 +19,6 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 	// Get db connection from gorm
 	db, err := p.gorm.DB()
 	if err != nil {
-		p.logger.Err(err).Msg("Unable to get db connection from gorm while getting recommended products.")
 		return nil, err
 	}
 
@@ -45,19 +42,15 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 			"INNER JOIN brands AS B ON B.id = P.brand_id " +
 			"WHERE P.id IN (" + joinedIds + ")"
 
-	p.logger.Debug().Str("query", query).Str("lang", lang).Msg("Querying the database to get recommended products.")
-
 	// Prepare the query
 	statement, err := db.Prepare(query)
 	if err != nil {
-		p.logger.Err(err).Msg("Unable to prepare the query to get recommended products.")
 		return nil, err
 	}
 
 	// Execute the query
 	rows, err := statement.Query(lang)
 	if err != nil {
-		p.logger.Err(err).Msg("Unable to query the database to get recommended products.")
 		return nil, err
 	}
 	defer rows.Close()
@@ -83,7 +76,6 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 			&brandName,
 		)
 		if err != nil {
-			p.logger.Err(err).Msg("Unable to scan row while mapping products")
 			return nil, err
 		}
 
@@ -106,7 +98,6 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 		})
 	}
 	if err := rows.Err(); err != nil {
-		p.logger.Err(err).Msg("Unable to scan all rows while mapping products")
 		return nil, err
 	}
 

@@ -21,7 +21,6 @@ type Redis struct {
 func (r *Redis) Get(key string) (string, error) {
 	result, err := r.client.Get(ctx, key).Result()
 	if err == redis.Nil {
-		r.logger.Info().Msgf("No cache content for key=%s", key)
 		return "", nil
 	} else if err != nil {
 		r.logger.Err(err).Msgf("Unable to retrieve key=%s", key)
@@ -35,7 +34,11 @@ func (r *Redis) Get(key string) (string, error) {
 func (r *Redis) Set(key string, value string, ttl int) error {
 	err := r.client.Set(ctx, key, value, time.Duration(ttl)*time.Second).Err()
 	if err != nil {
-		r.logger.Err(err).Msgf("Unable to set data into Redis: key=%s, value=%s, ttl=%d", key, value, ttl)
+		r.logger.Err(err).
+			Str("key", key).
+			Str("value", value).
+			Int("ttl", ttl).
+			Msgf("Unable to set data into Redis.")
 		return err
 	}
 
