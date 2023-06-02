@@ -21,6 +21,7 @@ type RecommendationServiceContract interface {
 func NewRecommendationService(
 	recommendationApi RecommendationApiContract,
 	productApi recommendationApiService.ProductApiContract,
+	brandApi recommendationApiService.BrandApiContract,
 	cacheService cacheService.CacheContract,
 	logger *fxlogger.Logger,
 	config *fxconfig.Config,
@@ -29,6 +30,7 @@ func NewRecommendationService(
 		ttl:               config.GetInt("config.recommendation.ttl"),
 		recommendationApi: recommendationApi,
 		productApi:        productApi,
+		brandApi:          brandApi,
 		cacheService:      cacheService,
 		logger:            logger,
 	}

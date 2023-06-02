@@ -18,11 +18,9 @@ const (
 	// Recommendable types
 	Retailer = "retailer"
 	Product  = "product"
-	Brand    = "brand"
+	//Brand    = "brand"
 
 	// Recommendation model types
 	ProductRecommendation = "product"
 	BrandRecommendation   = "brand"
-
-	DefaultLang = "en"
 )

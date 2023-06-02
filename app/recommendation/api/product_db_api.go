@@ -55,6 +55,7 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 	}
 	defer rows.Close()
 
+	// TODO: keep order of the id list from the func params
 	return p.mapRows(rows)
 }
 
