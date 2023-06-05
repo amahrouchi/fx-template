@@ -40,7 +40,8 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 			"B.name AS brandName " +
 			"FROM products AS P " +
 			"INNER JOIN brands AS B ON B.id = P.brand_id " +
-			"WHERE P.id IN (" + joinedIds + ")"
+			"WHERE P.id IN (" + joinedIds + ")" +
+			"ORDER BY FIELD(P.id, " + joinedIds + ")"
 
 	// Prepare the query
 	statement, err := db.Prepare(query)
@@ -55,7 +56,6 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 	}
 	defer rows.Close()
 
-	// TODO: keep order of the id list from the func params
 	return p.mapRows(rows)
 }
 

@@ -34,7 +34,8 @@ func (b *BrandDbApi) GetMany(ids []int) ([]*recommendationModel.RecommendationBr
 		"id, " +
 		"name " +
 		"FROM brands AS B " +
-		"WHERE id IN (" + joinedIds + ")"
+		"WHERE id IN (" + joinedIds + ")" +
+		"ORDER BY FIELD(id, " + joinedIds + ")"
 
 	// Execute the query
 	rows, err := db.Query(query)
@@ -43,7 +44,6 @@ func (b *BrandDbApi) GetMany(ids []int) ([]*recommendationModel.RecommendationBr
 	}
 	defer rows.Close()
 
-	// TODO: keep order of the id list from the func params
 	return b.mapRows(rows)
 }
 

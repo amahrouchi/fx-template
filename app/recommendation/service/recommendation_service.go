@@ -63,9 +63,14 @@ func (r *RecommendationService) GetRecommendationByTypes(
 			}
 
 			// Get recommendations from api
-			recommendationIds, err := r.recommendationApi.GetRecommendationsByEntityAndType(recommendableId, recommendableType, typeId, map[string]any{})
+			recommendationIds, err := r.recommendationApi.GetRecommendationsByEntityAndType(
+				recommendableId,
+				recommendableType,
+				typeId,
+				map[string]any{},
+			)
 			if err != nil {
-				return []any{}, err
+				return nil, err
 			}
 
 			// Get complete product data from api
