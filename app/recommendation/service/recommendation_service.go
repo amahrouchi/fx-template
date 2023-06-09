@@ -96,7 +96,8 @@ func (r *RecommendationService) sendRecosToChan(
 		recommendationEnum.ProductProducts,
 		recommendationEnum.BrandProducts,
 		recommendationEnum.ProductProductsCrossBrand,
-		recommendationEnum.ProductProductsSameBrand:
+		recommendationEnum.ProductProductsSameBrand,
+		recommendationEnum.RetailerCategoryProductsYouMayLike:
 		// Unmarshal and return cached recommendations
 		if cachedRecos != "" {
 			var unmarshalledRecos []*recommendationModel.RecommendationProduct

@@ -42,7 +42,7 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 			h.logger.Err(err).Msg("Unable to bind recommendation types to fetch.")
 			return c.JSON(
 				http.StatusBadRequest,
-				map[string]any{"message": "bad recommendation request."},
+				map[string]any{"message": "Bad recommendation request."},
 			)
 		}
 
@@ -53,7 +53,7 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 			h.logger.Err(err).Msg("Unable to validate recommendation types to fetch.")
 			return c.JSON(
 				http.StatusBadRequest,
-				map[string]any{"message": "bad recommendation request."},
+				map[string]any{"message": "Bad recommendation request."},
 			)
 		}
 
