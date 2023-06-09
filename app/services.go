@@ -24,5 +24,6 @@ func RegisterServices() fx.Option {
 		// APIs
 		recommendationApiService.NewProductApi,
 		recommendationApiService.NewBrandApi,
+		recommendationApiService.NewLinkGenerator,
 	)
 }

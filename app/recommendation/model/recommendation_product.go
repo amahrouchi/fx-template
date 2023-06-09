@@ -6,7 +6,7 @@ type RecommendationProduct struct {
 	Id     int                        `json:"id"`
 	Name   string                     `json:"name"`
 	Images []string                   `json:"images"` // TODO: get product images
-	Link   string                     `json:"link"`   // TODO: generate product link
+	Link   string                     `json:"link"`
 	Brand  RecommendationProductBrand `json:"brand"`
 }
 
@@ -14,4 +14,5 @@ type RecommendationProduct struct {
 type RecommendationProductBrand struct {
 	Id   int    `json:"id"`
 	Name string `json:"name"`
+	Link string `json:"link"`
 }

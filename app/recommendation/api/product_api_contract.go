@@ -11,8 +11,9 @@ type ProductApiContract interface {
 }
 
 // NewProductApi Creates a new ProductApiContract service.
-func NewProductApi(gorm *gorm.DB) ProductApiContract {
+func NewProductApi(gorm *gorm.DB, link LinkGeneratorContract) ProductApiContract {
 	return &ProductDbApi{
 		gorm: gorm,
+		link: link,
 	}
 }

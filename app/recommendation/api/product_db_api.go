@@ -12,6 +12,7 @@ import (
 // ProductDbApi service getting product data from the database.
 type ProductDbApi struct {
 	gorm *gorm.DB
+	link LinkGeneratorContract
 }
 
 // GetMany gets many products from the database.
@@ -92,9 +93,11 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 			Type: recommendationEnum.ProductRecommendation,
 			Id:   productId,
 			Name: displayedName,
+			Link: p.link.GetProductLink(productId, displayedName, brandId, brandName),
 			Brand: recommendationModel.RecommendationProductBrand{
 				Id:   brandId,
 				Name: brandName,
+				Link: p.link.GetBrandLink(brandId, brandName),
 			},
 		})
 	}
