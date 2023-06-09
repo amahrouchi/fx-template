@@ -58,13 +58,13 @@ func (r *RecommendationService) GetRecommendationByTypes(
 				"entities": recoHolder.recos,
 				"error":    true,
 			})
-			continue
+		} else {
+			recoByTypes = append(recoByTypes, map[string]any{
+				"id":       recoHolder.typeId,
+				"entities": recoHolder.recos,
+			})
 		}
 
-		recoByTypes = append(recoByTypes, map[string]any{
-			"id":       recoHolder.typeId,
-			"entities": recoHolder.recos,
-		})
 		if len(recoByTypes) == len(typeIds) {
 			close(recoChannel)
 		}

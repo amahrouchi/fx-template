@@ -14,7 +14,7 @@ type RecommendationServiceContract interface {
 		recommendableType string,
 		typeIds []int,
 		lang string,
-	) ([]any, error)
+	) []any
 }
 
 // NewRecommendationService Creates a new RecommendationService service.

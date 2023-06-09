@@ -31,23 +31,20 @@ func (s *DataScienceRecommendationApi) GetRecommendationsByEntityAndType(
 	// Perform the request
 	response, err := s.request(recommendableId, recommendableType, recommendationTypeId, metadata)
 	if err != nil {
-		s.logger.Error().Msgf("DS API request error: %v", err)
-		return []int{}, err
+		return nil, err
 	}
 
 	// Parse the response
 	result := make(map[string]map[string][]int)
 	err2 := json.Unmarshal([]byte(response), &result)
 	if err2 != nil {
-		s.logger.Error().Msgf("DS API JSON unmarshaling error: %v", err)
-		return []int{}, err
+		return nil, err
 	}
 
 	// Get the recommendations
 	recommendations, ok := result["reco"][strconv.Itoa(recommendableId)]
 	if !ok {
-		s.logger.Error().Msgf("DS API response error: %v", err)
-		return []int{}, errors.New("DS API response error")
+		return nil, errors.New("DS API response error")
 	}
 
 	return recommendations, nil
@@ -62,38 +59,33 @@ func (s *DataScienceRecommendationApi) request(
 ) (string, error) {
 	url, err := s.apiUrlService.Url(recommendableType, recommendationTypeId)
 	if err != nil {
-		s.logger.Error().Msg("DS API URL error")
 		return "", err
 	}
 
 	// Get payload
 	payload, err := s.getPayload(recommendableId, recommendationTypeId, metadata)
 	if err != nil {
-		s.logger.Error().Msg("DS API payload error")
 		return "", err
 	}
 
 	// Prepare the request payload
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		s.logger.Error().Msgf("DS API JSON payload marshaling error")
 		return "", err
 	}
 
 	// Create request
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonPayload))
 	if err != nil {
-		s.logger.Error().Msgf("DS API HTTP error")
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-API-KEY", s.apiKey)
 
 	// Send request
-	client := &http.Client{}
+	client := &http.Client{} // TODO: add timeout here => &http.Client{Timeout: 3 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
-		s.logger.Error().Msgf("DS API HTTP exec error")
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -107,7 +99,6 @@ func (s *DataScienceRecommendationApi) request(
 	// Read response
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		s.logger.Error().Msgf("DS API read body error")
 		return "", err
 	}
 

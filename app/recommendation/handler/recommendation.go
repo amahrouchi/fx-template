@@ -7,6 +7,7 @@ import (
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/samber/lo"
 	"net/http"
 )
 
@@ -57,30 +58,30 @@ func (h *RetailerRecommendationHandler) Handle() echo.HandlerFunc {
 		}
 
 		// Get recommendations
-		recos, err := h.recommendationService.GetRecommendationByTypes(
+		recos := h.recommendationService.GetRecommendationByTypes(
 			retailerId,
 			recommendationEnum.Retailer,
 			req.Types,
 			req.Lang,
 		)
-		if err != nil {
-			h.logger.Err(err).
-				Int("retailerId", retailerId).
-				Str("recommendableType", recommendationEnum.Retailer).
-				Interface("recommendationTypeIds", req.Types).
-				Str("lang", req.Lang).
-				Msg("Unable to get recommendations from the service.")
+
+		// Check if there are only errors
+		onlyErrors := lo.Reduce(recos, func(agg bool, item any, _ int) bool {
+			itemHasError, ok := item.(map[string]any)["error"]
+
+			return agg && ok && itemHasError.(bool)
+		}, true)
+
+		if onlyErrors {
 			return c.JSON(
 				http.StatusInternalServerError,
-				map[string]any{"message": "Unable to retrieve recommendations."},
+				map[string]any{"message": "All recommendation requests failed."},
 			)
 		}
 
 		return c.JSON(
 			http.StatusOK,
-			map[string]any{
-				"data": recos,
-			},
+			map[string]any{"data": recos},
 		)
 	}
 }
