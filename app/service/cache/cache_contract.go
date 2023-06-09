@@ -38,5 +38,5 @@ func NewCacheService(config *fxconfig.Config, logger *fxlogger.Logger) CacheCont
 }
 
 // -----------------------------------
-// TODO: close the redis connection?
+// TODO: close the redis connection? How to?
 // -----------------------------------

@@ -5,8 +5,6 @@ import (
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 )
 
-// TODO: test all URLs
-
 // DatascienceApiUrl Generates the proper URL to call the DataScience API depending on the context.
 type DatascienceApiUrl struct {
 	apiUrl string
