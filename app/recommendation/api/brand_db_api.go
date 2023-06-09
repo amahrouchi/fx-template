@@ -12,6 +12,7 @@ import (
 // BrandDbApi service getting brand data from the database.
 type BrandDbApi struct {
 	gorm *gorm.DB
+	link LinkGeneratorContract
 }
 
 // GetMany gets many brands from the database.
@@ -67,6 +68,7 @@ func (b *BrandDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommendat
 			Type: recommendationEnum.BrandRecommendation,
 			Id:   brandId,
 			Name: brandName,
+			Link: b.link.GetBrandLink(brandId, brandName),
 		})
 	}
 	if err := rows.Err(); err != nil {

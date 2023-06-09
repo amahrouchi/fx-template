@@ -11,8 +11,9 @@ type BrandApiContract interface {
 }
 
 // NewBrandApi Creates a new BrandApiContract service.
-func NewBrandApi(gorm *gorm.DB) BrandApiContract {
+func NewBrandApi(gorm *gorm.DB, link LinkGeneratorContract) BrandApiContract {
 	return &BrandDbApi{
 		gorm: gorm,
+		link: link,
 	}
 }
