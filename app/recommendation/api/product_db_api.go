@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
+	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"gorm.io/gorm"
 	"strconv"
 	"strings"
@@ -11,21 +12,22 @@ import (
 
 // ProductDbApi service getting product data from the database.
 type ProductDbApi struct {
-	gorm *gorm.DB
-	link LinkGeneratorContract
+	gorm   *gorm.DB
+	link   LinkGeneratorContract
+	logger *fxlogger.Logger
 }
 
 // GetMany gets many products from the database.
-func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.RecommendationProduct, error) {
+func (p *ProductDbApi) GetMany(productIds []int, lang string) ([]*recommendationModel.RecommendationProduct, error) {
 	// Get db connection from gorm
 	db, err := p.gorm.DB()
 	if err != nil {
 		return nil, err
 	}
 
-	// Join the ids into a string
+	// Join the productIds into a string
 	var strIds []string
-	for _, id := range ids {
+	for _, id := range productIds {
 		strIds = append(strIds, strconv.Itoa(id))
 	}
 	joinedIds := strings.Join(strIds, ",")
@@ -57,7 +59,19 @@ func (p *ProductDbApi) GetMany(ids []int, lang string) ([]*recommendationModel.R
 	}
 	defer rows.Close()
 
-	return p.mapRows(rows)
+	// Map the rows to a list of products
+	productList, err := p.mapRows(rows)
+	if err != nil {
+		return nil, err
+	}
+
+	// Populate images
+	err = p.fetchProductImages(productIds, productList)
+	if err != nil {
+		return nil, err
+	}
+
+	return productList, nil
 }
 
 // mapRows maps the sql rows to a list of products.
@@ -65,17 +79,12 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 	var list []*recommendationModel.RecommendationProduct
 	for rows.Next() {
 		// Get the data from the row
-		var productId int
-		var productName string
+		var productId, brandId int
+		var productName, brandName string
 		var productTranslatedName any
-		var brandId int
-		var brandName string
 		err := rows.Scan(
-			&productId,
-			&productName,
-			&productTranslatedName,
-			&brandId,
-			&brandName,
+			&productId, &productName, &productTranslatedName,
+			&brandId, &brandName,
 		)
 		if err != nil {
 			return nil, err
@@ -106,4 +115,61 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 	}
 
 	return list, nil
+}
+
+// fetchProductImages populates the images into the product list.
+func (p *ProductDbApi) fetchProductImages(
+	productIds []int,
+	products []*recommendationModel.RecommendationProduct,
+) error {
+	// Get db connection from gorm
+	db, err := p.gorm.DB()
+	if err != nil {
+		return err
+	}
+
+	// Join the productIds into a string
+	var strProductIds []string
+	for _, id := range productIds {
+		strProductIds = append(strProductIds, strconv.Itoa(id))
+	}
+	joinedIds := strings.Join(strProductIds, ",")
+
+	// Query products from the database
+	query := "SELECT P.id, PI.filename " +
+		"FROM products AS P " +
+		"INNER JOIN product_images AS PI ON PI.product_id = P.id " +
+		"WHERE P.id IN (" + joinedIds + ") " +
+		"AND PI.product_variant_id IS NULL " +
+		"AND PI.deleted_at IS NULL " +
+		"ORDER BY PI.product_id, PI.`order`"
+
+	// Prepare the query
+	rows, err := db.Query(query)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	// Map the images per product
+	imageMap := make(map[int][]string)
+	for rows.Next() {
+		// Get the data from the row
+		var productId int
+		var filename string
+		err := rows.Scan(&productId, &filename)
+		if err != nil {
+			return err
+		}
+
+		// Append the filename to the product
+		imageMap[productId] = append(imageMap[productId], filename)
+	}
+
+	// Populate the images into the product list
+	for _, product := range products {
+		product.Images = imageMap[product.Id]
+	}
+
+	return nil
 }

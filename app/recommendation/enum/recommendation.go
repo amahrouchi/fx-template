@@ -1,7 +1,5 @@
 package recommendationEnum
 
-// TODO: test all types
-
 const (
 	// Recommendation types
 	RetailerBrandsYouMayLike           = 1
