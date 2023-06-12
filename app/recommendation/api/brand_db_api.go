@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	recommendationEnum "github.com/ekkinox/fx-template/app/recommendation/enum"
 	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
+	"github.com/ekkinox/fx-template/modules/fxlogger"
+	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"strconv"
 	"strings"
@@ -11,8 +13,9 @@ import (
 
 // BrandDbApi service getting brand data from the database.
 type BrandDbApi struct {
-	gorm *gorm.DB
-	link LinkGeneratorContract
+	gorm   *gorm.DB
+	link   LinkGeneratorContract
+	logger *fxlogger.Logger
 }
 
 // GetMany gets many brands from the database.
@@ -33,7 +36,10 @@ func (b *BrandDbApi) GetMany(ids []int) ([]*recommendationModel.RecommendationBr
 	// Query products from the database
 	query := "SELECT " +
 		"id, " +
-		"name " +
+		"name, " +
+		"image_squared, " +
+		"image_rounded, " +
+		"image_large " +
 		"FROM brands AS B " +
 		"WHERE id IN (" + joinedIds + ")" +
 		"ORDER BY FIELD(id, " + joinedIds + ")"
@@ -55,9 +61,10 @@ func (b *BrandDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommendat
 		// Get the data from the row
 		var brandId int
 		var brandName string
+		var imageSquared, imageRounded, imageLarge *string
 		err := rows.Scan(
-			&brandId,
-			&brandName,
+			&brandId, &brandName,
+			&imageSquared, &imageRounded, &imageLarge,
 		)
 		if err != nil {
 			return nil, err
@@ -69,6 +76,11 @@ func (b *BrandDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommendat
 			Id:   brandId,
 			Name: brandName,
 			Link: b.link.GetBrandLink(brandId, brandName),
+			Images: &recommendationModel.RecommendationBrandImage{
+				Squared: imagePath(imageSquared),
+				Rounded: imagePath(imageRounded),
+				Large:   imagePath(imageLarge),
+			},
 		})
 	}
 	if err := rows.Err(); err != nil {
@@ -76,4 +88,13 @@ func (b *BrandDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommendat
 	}
 
 	return list, nil
+}
+
+// imagePath returns the image path if the filename is not nil.
+func imagePath(filename *string) *string {
+	if filename == nil || *filename == "" {
+		return nil
+	}
+
+	return lo.ToPtr("/brands/squared/" + *filename + ".jpg")
 }

@@ -2,6 +2,7 @@ package recommendationApiService
 
 import (
 	recommendationModel "github.com/ekkinox/fx-template/app/recommendation/model"
+	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"gorm.io/gorm"
 )
 
@@ -11,9 +12,10 @@ type BrandApiContract interface {
 }
 
 // NewBrandApi Creates a new BrandApiContract service.
-func NewBrandApi(gorm *gorm.DB, link LinkGeneratorContract) BrandApiContract {
+func NewBrandApi(gorm *gorm.DB, link LinkGeneratorContract, logger *fxlogger.Logger) BrandApiContract {
 	return &BrandDbApi{
-		gorm: gorm,
-		link: link,
+		gorm:   gorm,
+		link:   link,
+		logger: logger,
 	}
 }

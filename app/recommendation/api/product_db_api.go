@@ -66,7 +66,7 @@ func (p *ProductDbApi) GetMany(productIds []int, lang string) ([]*recommendation
 	}
 
 	// Populate images
-	err = p.fetchProductImages(productIds, productList)
+	err = p.fetchImages(productIds, productList)
 	if err != nil {
 		return nil, err
 	}
@@ -117,10 +117,10 @@ func (p *ProductDbApi) mapRows(rows *sql.Rows) ([]*recommendationModel.Recommend
 	return list, nil
 }
 
-// fetchProductImages populates the images into the product list.
-func (p *ProductDbApi) fetchProductImages(
+// fetchImages populates the images into the product list.
+func (p *ProductDbApi) fetchImages(
 	productIds []int,
-	products []*recommendationModel.RecommendationProduct,
+	productRecos []*recommendationModel.RecommendationProduct,
 ) error {
 	// Get db connection from gorm
 	db, err := p.gorm.DB()
@@ -167,7 +167,7 @@ func (p *ProductDbApi) fetchProductImages(
 	}
 
 	// Populate the images into the product list
-	for _, product := range products {
+	for _, product := range productRecos {
 		product.Images = imageMap[product.Id]
 	}
 
