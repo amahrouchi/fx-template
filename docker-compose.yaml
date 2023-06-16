@@ -60,13 +60,13 @@ services:
   # -------------------
   # PubSub ------------
   # -------------------
-  pubsub:
-    container_name: pubsub
+  search_pubsub:
+    container_name: search_pubsub
     image: gcr.io/google.com/cloudsdktool/cloud-sdk:434.0.0-emulators
     command: "gcloud beta emulators pubsub start --host-port=0.0.0.0:8085"
     restart: always
     networks:
-      - network
+      - search_network
     ports:
       - "8085:8085"
     expose:
