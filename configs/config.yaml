@@ -43,3 +43,11 @@ config:
       should_fail: false
     test:
       value: common
+    datascience-api:
+      url: ${DATA_API_URL}
+      key: ${DATA_API_KEY}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+    recommendation:
+      ttl: ${REDIS_RECOMMENDATION_TTL}

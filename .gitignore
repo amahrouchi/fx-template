@@ -24,6 +24,7 @@ go.work
 
 # Local env
 .env
+.env.compose
 
 # IDEs
 .idea/
