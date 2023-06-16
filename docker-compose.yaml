@@ -1,16 +1,19 @@
 version: '3'
 
 services:
-  server:
-    container_name: server
+  # -------------------
+  # App ---------------
+  # -------------------
+  search_app:
+    container_name: search_app
     build:
       context: .
       dockerfile: Dockerfile-dev
     command: ["server"]
     networks:
-      - network
+      - search_network
     ports:
-      - "8080:8080"
+      - "${COMPOSE_SEARCH_APP_PORT:-8080}:8080"
       - "50051:50051"
       - "40000:40000"
     expose:
@@ -20,30 +23,43 @@ services:
       - .:/app
     env_file:
       - .env
-  worker:
-    container_name: worker
+  # -------------------
+  # Worker ------------
+  # -------------------
+  search_worker:
+    container_name: search_worker
     build:
       context: .
       dockerfile: Dockerfile-dev
     command: ["worker"]
     networks:
-      - network
+      - search_network
     ports:
       - "40001:40000"
     volumes:
       - .:/app
     env_file:
       - .env
-  database:
-    container_name: database
+  # -------------------
+  # Database ----------
+  # -------------------
+  search_db:
+    container_name: search_db
     image: mysql:8
     restart: always
     networks:
-      - network
+      - search_network
+    ports:
+      - "${COMPOSE_SEARCH_DB_PORT:-3306}:3306"
+    expose:
+      - "3306"
     volumes:
-      - database_data:/var/lib/mysql
+      - search_db_data:/var/lib/mysql
     env_file:
       - .env
+  # -------------------
+  # PubSub ------------
+  # -------------------
   pubsub:
     container_name: pubsub
     image: gcr.io/google.com/cloudsdktool/cloud-sdk:434.0.0-emulators
@@ -57,11 +73,38 @@ services:
       - "8085"
     env_file:
       - .env
+  # -------------------
+  # Redis cache -------
+  # -------------------
+  search_redis:
+    container_name: search_redis
+    image: "redis:latest"
+    restart: always
+    command: --port 6380
+    ports:
+      - "${COMPOSE_REDIS_PORT:-6380}:6380"
+    networks:
+      - search_network
+  # -------------------
+  # Redis commander ---
+  # -------------------
+  search_redis_commander:
+    container_name: search_redis_commander
+    image: rediscommander/redis-commander
+    networks:
+      - search_network
+    ports:
+      - "${COMPOSE_REDIS_COMMANDER_PORT:-8181}:8081"
+    environment:
+      - REDIS_HOSTS=local:search_redis:6380
 
+# -------------------
+# Misc --------------
+# -------------------
 volumes:
-  database_data:
+  search_db_data:
     driver: local
 
 networks:
-  network:
+  search_network:
     driver: bridge
