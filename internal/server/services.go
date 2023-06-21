@@ -5,6 +5,7 @@ import (
 	recommendationApiService "github.com/ekkinox/fx-template/internal/server/recommendation/api"
 	recommendationService "github.com/ekkinox/fx-template/internal/server/recommendation/service"
 	"github.com/ekkinox/fx-template/internal/server/repository"
+	"github.com/ekkinox/fx-template/internal/server/service"
 	cacheService "github.com/ekkinox/fx-template/internal/server/service/cache"
 	"github.com/ekkinox/fx-template/modules/fxgorm"
 	"github.com/ekkinox/fx-template/modules/fxhealthchecker"
@@ -24,6 +25,7 @@ func RegisterServices() fx.Option {
 		recommendationService.NewApiUrl,
 		recommendationService.NewRecommendationService,
 		cacheService.NewCacheService,
+		service.NewESClient,
 		// APIs
 		recommendationApiService.NewProductApi,
 		recommendationApiService.NewBrandApi,
