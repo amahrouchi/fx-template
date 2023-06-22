@@ -32,30 +32,34 @@ func (p *ProductEsApi) GetMany(productIds []int, lang string) ([]*recommendation
 
 	documents := results.(map[string]any)["docs"].([]any)
 
-	return p.mapDocuments(documents), nil
+	return p.mapDocuments(documents, lang), nil
 }
 
 // mapDocuments maps ElasticSearch documents to RecommendationProduct.
-func (p *ProductEsApi) mapDocuments(documents []any) []*recommendationModel.RecommendationProduct {
+func (p *ProductEsApi) mapDocuments(documents []any, lang string) []*recommendationModel.RecommendationProduct {
 	var products []*recommendationModel.RecommendationProduct
 	for _, document := range documents {
 		// Get product information
 		doc := document.(map[string]any)["_source"].(map[string]any)
-		id, ok1 := doc["id"].(float64)
-		name, ok2 := doc["name"].(map[string]any)["en"].(string)
-		link, ok3 := doc["link"].(string)
+		id, okId := doc["id"].(float64)
+		link, okLink := doc["link"].(string)
 		rawImages := doc["images"].([]any)
 		images := lo.Map(rawImages, func(image any, _ int) string {
 			return image.(string)
 		})
 
+		// Get product name to display
+		defaultName, okDefaultName := doc["name"].(map[string]any)["en"].(string)
+		name, okName := doc["name"].(map[string]any)[lang].(string)
+		displayedName := lo.Ternary(okName, name, defaultName)
+
 		// Get brand information
-		brandId, ok4 := doc["brand"].(map[string]any)["id"].(float64)
-		brandName, ok5 := doc["brand"].(map[string]any)["name"].(string)
-		brandLink, ok6 := doc["brand"].(map[string]any)["link"].(string)
+		brandId, okBrandId := doc["brand"].(map[string]any)["id"].(float64)
+		brandName, okBrandName := doc["brand"].(map[string]any)["name"].(string)
+		brandLink, okBrandLink := doc["brand"].(map[string]any)["link"].(string)
 
 		// Check if all information are available
-		if !ok1 || !ok2 || !ok3 || !ok4 || !ok5 || !ok6 {
+		if !okId || !okDefaultName || !okName || !okLink || !okBrandId || !okBrandName || !okBrandLink {
 			p.logger.Warn().
 				Interface("document", document).
 				Msg("Failed to map some product information from ES response.")
@@ -65,7 +69,7 @@ func (p *ProductEsApi) mapDocuments(documents []any) []*recommendationModel.Reco
 		products = append(products, &recommendationModel.RecommendationProduct{
 			Type:   recommendationEnum.ProductRecommendation,
 			Id:     int(id),
-			Name:   name,
+			Name:   displayedName,
 			Images: images,
 			Link:   link,
 			Brand: &recommendationModel.RecommendationProductBrand{
