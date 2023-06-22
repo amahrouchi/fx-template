@@ -2,8 +2,8 @@ package recommendationApiService
 
 import (
 	recommendationModel "github.com/ekkinox/fx-template/internal/server/recommendation/model"
+	elasticService "github.com/ekkinox/fx-template/internal/server/service/elastic"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
-	"gorm.io/gorm"
 )
 
 // ProductApiContract service getting product data from somewhere.
@@ -12,10 +12,10 @@ type ProductApiContract interface {
 }
 
 // NewProductApi Creates a new ProductApiContract service.
-func NewProductApi(gorm *gorm.DB, link LinkGeneratorContract, logger *fxlogger.Logger) ProductApiContract {
-	return &ProductDbApi{
-		gorm:   gorm,
-		link:   link,
-		logger: logger,
+func NewProductApi(esClient elasticService.ESClientContract, link LinkGeneratorContract, logger *fxlogger.Logger) ProductApiContract {
+	return &ProductEsApi{
+		link:     link,
+		logger:   logger,
+		esClient: esClient,
 	}
 }

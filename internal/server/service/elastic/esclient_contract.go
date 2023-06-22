@@ -1,4 +1,4 @@
-package service
+package elasticService
 
 import (
 	"github.com/ekkinox/fx-template/modules/fxconfig"
@@ -9,6 +9,7 @@ import (
 // ESClientContract is the interface for the ESClient services.
 type ESClientContract interface {
 	Ping() (bool, error)
+	Mget(index string, ids []string) (any, error)
 }
 
 // NewESClient Creates a new ESClientContract service.
@@ -46,6 +47,7 @@ func NewESClient(
 	return &ESClient{
 		client: client,
 		prefix: prefix,
+		config: config,
 		logger: logger,
 	}
 }
