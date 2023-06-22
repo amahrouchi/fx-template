@@ -8,12 +8,12 @@ type RecommendationBrand struct {
 	Id     int                       `json:"id"`
 	Name   string                    `json:"name"`
 	Images *RecommendationBrandImage `json:"images"`
-	Link   string                    `json:"link"` // TODO: generate brand link
+	Link   string                    `json:"link"`
 }
 
 // RecommendationBrandImage the model displayed for brand recommendation images.
 type RecommendationBrandImage struct {
-	Squared *string `json:"squared"`
-	Rounded *string `json:"rounded"`
-	Large   *string `json:"large"`
+	Squared string `json:"squared"`
+	Rounded string `json:"rounded"`
+	Large   string `json:"large"`
 }
