@@ -12,9 +12,8 @@ type ProductApiContract interface {
 }
 
 // NewProductApi Creates a new ProductApiContract service.
-func NewProductApi(esClient elasticService.ESClientContract, link LinkGeneratorContract, logger *fxlogger.Logger) ProductApiContract {
+func NewProductApi(esClient elasticService.ESClientContract, logger *fxlogger.Logger) ProductApiContract {
 	return &ProductEsApi{
-		link:     link,
 		logger:   logger,
 		esClient: esClient,
 	}

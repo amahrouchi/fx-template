@@ -13,7 +13,6 @@ import (
 // ProductEsApi service getting product data from elasticsearch.
 type ProductEsApi struct {
 	esClient elasticService.ESClientContract
-	link     LinkGeneratorContract
 	logger   *fxlogger.Logger
 }
 
