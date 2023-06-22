@@ -44,7 +44,7 @@ func (s *DataScienceRecommendationApi) GetRecommendationsByEntityAndType(
 	// Get the recommendations
 	recommendations, ok := result["reco"][strconv.Itoa(recommendableId)]
 	if !ok {
-		return nil, errors.New("DS API response error")
+		return nil, errors.New("Unable to get recommendations from the DS API response.")
 	}
 
 	return recommendations, nil

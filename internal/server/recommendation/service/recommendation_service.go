@@ -44,6 +44,7 @@ func (r *RecommendationService) GetRecommendationByTypes(
 	// Wait for all goroutines gathering recommendations to finish
 	var recoByTypes []any
 	for recoHolder := range recoChannel {
+		// Send empty recommendations on error
 		if recoHolder.err != nil {
 			r.logger.Err(recoHolder.err).
 				Str("recommendableType", recommendableType).
@@ -52,19 +53,20 @@ func (r *RecommendationService) GetRecommendationByTypes(
 				Str("lang", lang).
 				Msg("Unable to get recommendations.")
 
-			// Send empty recommendations on error
 			recoByTypes = append(recoByTypes, map[string]any{
 				"id":       recoHolder.typeId,
 				"entities": recoHolder.recos,
 				"error":    true,
 			})
 		} else {
+			// Send recommendations on success
 			recoByTypes = append(recoByTypes, map[string]any{
 				"id":       recoHolder.typeId,
 				"entities": recoHolder.recos,
 			})
 		}
 
+		// Close the channel when all goroutines are done
 		if len(recoByTypes) == len(typeIds) {
 			close(recoChannel)
 		}
@@ -85,7 +87,11 @@ func (r *RecommendationService) sendRecosToChan(
 	key := fmt.Sprintf("recommendations[%s][%d][%d][%s]", recommendableType, recommendableId, typeId, lang)
 	cachedRecos, err := r.cacheService.Get(key)
 	if err != nil {
-		recoChannel <- &recommendationHolder{typeId, nil, err}
+		recoChannel <- &recommendationHolder{
+			typeId: typeId,
+			recos:  nil,
+			err:    err,
+		}
 		return
 	}
 
@@ -103,12 +109,20 @@ func (r *RecommendationService) sendRecosToChan(
 			var unmarshalledRecos []*recommendationModel.RecommendationProduct
 			err = json.Unmarshal([]byte(cachedRecos), &unmarshalledRecos)
 			if err != nil {
-				recoChannel <- &recommendationHolder{typeId, nil, err}
+				recoChannel <- &recommendationHolder{
+					typeId: typeId,
+					recos:  nil,
+					err:    err,
+				}
 				return
 			}
 
 			// Send cached product recommendations to channel
-			recoChannel <- &recommendationHolder{typeId, unmarshalledRecos, nil}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  unmarshalledRecos,
+				err:    nil,
+			}
 			return
 		}
 
@@ -120,7 +134,11 @@ func (r *RecommendationService) sendRecosToChan(
 			map[string]any{},
 		)
 		if err != nil {
-			recoChannel <- &recommendationHolder{typeId, nil, err}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  nil,
+				err:    err,
+			}
 			return
 		}
 
@@ -134,7 +152,11 @@ func (r *RecommendationService) sendRecosToChan(
 		// Cache the complete product recommendations
 		jsonRecos, err := json.Marshal(products)
 		if err != nil {
-			recoChannel <- &recommendationHolder{typeId, nil, err}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  nil,
+				err:    err,
+			}
 			return
 		}
 
@@ -163,33 +185,53 @@ func (r *RecommendationService) sendRecosToChan(
 			var unmarshalledRecos []*recommendationModel.RecommendationBrand
 			err = json.Unmarshal([]byte(cachedRecos), &unmarshalledRecos)
 			if err != nil {
-				recoChannel <- &recommendationHolder{typeId, nil, err}
+				recoChannel <- &recommendationHolder{
+					typeId: typeId,
+					recos:  nil,
+					err:    err,
+				}
 				return
 			}
 
 			// Send cached brand recos to the channel
-			recoChannel <- &recommendationHolder{typeId, unmarshalledRecos, nil}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  unmarshalledRecos,
+				err:    nil,
+			}
 			return
 		}
 
 		// Get recommendations from api
 		recommendationIds, err := r.recommendationApi.GetRecommendationsByEntityAndType(recommendableId, recommendableType, typeId, map[string]any{})
 		if err != nil {
-			recoChannel <- &recommendationHolder{typeId, nil, err}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  nil,
+				err:    err,
+			}
 			return
 		}
 
 		// Get complete product data from api
 		brands, err := r.brandApi.GetMany(recommendationIds)
 		if err != nil {
-			recoChannel <- &recommendationHolder{typeId, nil, err}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  nil,
+				err:    err,
+			}
 			return
 		}
 
 		// Cache the complete product recommendations
 		jsonRecos, err := json.Marshal(brands)
 		if err != nil {
-			recoChannel <- &recommendationHolder{typeId, nil, err}
+			recoChannel <- &recommendationHolder{
+				typeId: typeId,
+				recos:  nil,
+				err:    err,
+			}
 			return
 		}
 
@@ -206,7 +248,11 @@ func (r *RecommendationService) sendRecosToChan(
 		}
 
 		// Send brand recos to the channel
-		recoChannel <- &recommendationHolder{typeId, brands, nil}
+		recoChannel <- &recommendationHolder{
+			typeId: typeId,
+			recos:  brands,
+			err:    nil,
+		}
 		return
 
 	default:
@@ -214,7 +260,11 @@ func (r *RecommendationService) sendRecosToChan(
 		r.logger.Warn().Int("typeId", typeId).Msg(message)
 
 		// Send empty reco to the channel
-		recoChannel <- &recommendationHolder{typeId, []any{}, nil}
+		recoChannel <- &recommendationHolder{
+			typeId: typeId,
+			recos:  []any{},
+			err:    nil,
+		}
 		return
 	}
 }

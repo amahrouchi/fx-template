@@ -16,8 +16,7 @@ func (u *DatascienceApiUrl) Url(recommendableType string, recommendationTypeId i
 	case recommendationEnum.Retailer:
 		return u.getRetailerUrl(recommendationTypeId), nil
 	case recommendationEnum.Product:
-		url, err := u.getProductUrl(recommendationTypeId)
-		return url, err
+		return u.getProductUrl(recommendationTypeId)
 	default:
 		return "", errors.New("invalid recommendable type")
 	}
