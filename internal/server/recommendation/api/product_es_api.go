@@ -37,10 +37,18 @@ func (p *ProductEsApi) GetMany(productIds []int, lang string) ([]*recommendation
 
 // mapDocuments maps ElasticSearch documents to RecommendationProduct.
 func (p *ProductEsApi) mapDocuments(documents []any, lang string) []*recommendationModel.RecommendationProduct {
-	var products []*recommendationModel.RecommendationProduct
+	products := make([]*recommendationModel.RecommendationProduct, 0)
 	for _, document := range documents {
-		// Get product information
+		// Check if the document is valid
+		if document.(map[string]any)["_source"] == nil {
+			p.logger.Warn().
+				Interface("document", document).
+				Msg("The product document cannot be retrieved.")
+			continue
+		}
 		doc := document.(map[string]any)["_source"].(map[string]any)
+
+		// Get product information
 		id, okId := doc["id"].(float64)
 		link, okLink := doc["link"].(string)
 		rawImages := doc["images"].([]any)
