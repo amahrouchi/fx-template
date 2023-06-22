@@ -1,5 +1,7 @@
 package recommendationModel
 
+// TODO: See with FE the list of needed information.
+
 // RecommendationProduct model.
 type RecommendationProduct struct {
 	Type   string                      `json:"type"`
