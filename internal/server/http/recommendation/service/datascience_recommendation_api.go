@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	recommendationEnum "github.com/ekkinox/fx-template/internal/server/recommendation/enum"
+	recommendationEnum "github.com/ekkinox/fx-template/internal/server/http/recommendation/enum"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"io"
 	"net/http"

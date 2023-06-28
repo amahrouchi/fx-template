@@ -2,7 +2,7 @@ package recommendationService
 
 import (
 	"errors"
-	recommendationEnum "github.com/ekkinox/fx-template/internal/server/recommendation/enum"
+	recommendationEnum "github.com/ekkinox/fx-template/internal/server/http/recommendation/enum"
 )
 
 // DatascienceApiUrl Generates the proper URL to call the DataScience API depending on the context.

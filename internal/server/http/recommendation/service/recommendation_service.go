@@ -3,10 +3,10 @@ package recommendationService
 import (
 	"encoding/json"
 	"fmt"
-	recommendationApiService "github.com/ekkinox/fx-template/internal/server/recommendation/api"
-	recommendationEnum "github.com/ekkinox/fx-template/internal/server/recommendation/enum"
-	recommendationModel "github.com/ekkinox/fx-template/internal/server/recommendation/model"
-	cacheService "github.com/ekkinox/fx-template/internal/server/service/cache"
+	recommendationApiService "github.com/ekkinox/fx-template/internal/server/http/recommendation/api"
+	recommendationEnum "github.com/ekkinox/fx-template/internal/server/http/recommendation/enum"
+	recommendationModel "github.com/ekkinox/fx-template/internal/server/http/recommendation/model"
+	cacheService "github.com/ekkinox/fx-template/internal/server/http/service/cache"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 )
 

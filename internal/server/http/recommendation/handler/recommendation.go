@@ -1,9 +1,9 @@
 package recommendationHandler
 
 import (
-	recommendationEnum "github.com/ekkinox/fx-template/internal/server/recommendation/enum"
-	recommendationRequest "github.com/ekkinox/fx-template/internal/server/recommendation/request"
-	recommendationService "github.com/ekkinox/fx-template/internal/server/recommendation/service"
+	recommendationEnum "github.com/ekkinox/fx-template/internal/server/http/recommendation/enum"
+	recommendationRequest "github.com/ekkinox/fx-template/internal/server/http/recommendation/request"
+	recommendationService "github.com/ekkinox/fx-template/internal/server/http/recommendation/service"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"

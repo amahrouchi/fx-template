@@ -6,7 +6,7 @@ import (
 	"github.com/ekkinox/fx-template/internal/server/http/handler/posts"
 	"github.com/ekkinox/fx-template/internal/server/http/handler/pubsub"
 	"github.com/ekkinox/fx-template/internal/server/http/middleware"
-	recommendationHandler "github.com/ekkinox/fx-template/internal/server/recommendation/handler"
+	recommendationHandler "github.com/ekkinox/fx-template/internal/server/http/recommendation/handler"
 	"github.com/ekkinox/fx-template/modules/fxhttpserver"
 	"go.uber.org/fx"
 )

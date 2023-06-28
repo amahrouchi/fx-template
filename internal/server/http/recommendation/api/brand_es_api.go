@@ -1,10 +1,10 @@
 package recommendationApiService
 
 import (
-	recommendationEnum "github.com/ekkinox/fx-template/internal/server/recommendation/enum"
-	recommendationModel "github.com/ekkinox/fx-template/internal/server/recommendation/model"
-	elasticService "github.com/ekkinox/fx-template/internal/server/service/elastic"
-	elasticServiceEnum "github.com/ekkinox/fx-template/internal/server/service/elastic/enum"
+	recommendationEnum "github.com/ekkinox/fx-template/internal/server/http/recommendation/enum"
+	recommendationModel "github.com/ekkinox/fx-template/internal/server/http/recommendation/model"
+	elasticService "github.com/ekkinox/fx-template/internal/server/http/service/elastic"
+	elasticServiceEnum "github.com/ekkinox/fx-template/internal/server/http/service/elastic/enum"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 	"github.com/samber/lo"
 	"strconv"

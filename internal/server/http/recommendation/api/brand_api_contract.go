@@ -1,8 +1,8 @@
 package recommendationApiService
 
 import (
-	recommendationModel "github.com/ekkinox/fx-template/internal/server/recommendation/model"
-	elasticService "github.com/ekkinox/fx-template/internal/server/service/elastic"
+	recommendationModel "github.com/ekkinox/fx-template/internal/server/http/recommendation/model"
+	elasticService "github.com/ekkinox/fx-template/internal/server/http/service/elastic"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 )
 

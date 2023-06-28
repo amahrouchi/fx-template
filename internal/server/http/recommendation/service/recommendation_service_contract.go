@@ -1,8 +1,8 @@
 package recommendationService
 
 import (
-	recommendationApiService "github.com/ekkinox/fx-template/internal/server/recommendation/api"
-	cacheService "github.com/ekkinox/fx-template/internal/server/service/cache"
+	recommendationApiService "github.com/ekkinox/fx-template/internal/server/http/recommendation/api"
+	cacheService "github.com/ekkinox/fx-template/internal/server/http/service/cache"
 	"github.com/ekkinox/fx-template/modules/fxconfig"
 	"github.com/ekkinox/fx-template/modules/fxlogger"
 )
