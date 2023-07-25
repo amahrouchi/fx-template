@@ -43,7 +43,7 @@ func RegisterHandlers() fx.Option {
 				[]*fxhttpserver.HandlerRegistration{
 					fxhttpserver.NewHandlerRegistration("GET", "", recommendationHandler.NewRecommendationHandler),
 				},
-				// TODO: Add the middleware to handle auth
+				middleware.NewAuthMiddleware,
 			),
 		),
 	)
