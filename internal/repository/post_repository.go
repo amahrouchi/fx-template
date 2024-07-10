@@ -12,12 +12,6 @@ type PostRepository struct {
 }
 
 func NewPostRepository(db *gorm.DB) (*PostRepository, error) {
-
-	err := db.AutoMigrate(&model.Post{})
-	if err != nil {
-		return nil, err
-	}
-
 	return &PostRepository{
 		db: db,
 	}, nil

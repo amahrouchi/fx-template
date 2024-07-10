@@ -43,3 +43,17 @@ config:
       should_fail: false
     test:
       value: common
+    datascience-api:
+      url: ${DATA_API_URL}
+      key: ${DATA_API_KEY}
+    elastic:
+      host: ${ELASTIC_HOST}
+      port: ${ELASTIC_PORT}
+      user: ${ELASTIC_USER}
+      password: ${ELASTIC_PASSWORD}
+      prefix: ${ELASTIC_PREFIX}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+    recommendation:
+      ttl: ${REDIS_RECOMMENDATION_TTL}
